@@ -1,4 +1,4 @@
-import java.util.*;
+import java.util.Scanner;
 import java.sql.*;
 
 abstract class Role {

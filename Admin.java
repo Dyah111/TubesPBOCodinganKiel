@@ -1,3 +1,7 @@
+import java.sql.*;
+import java.util.List;
+import java.util.Scanner;
+
 class Admin extends Role {
     public Admin(String id, String name, String email, String password) {
         super(id, name, email, password, "Admin");
@@ -34,15 +38,10 @@ class Admin extends Role {
     }
 
     public void listDokters() {
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT * FROM dokters")) {
-            System.out.println("Daftar Dokter:");
-            while (rs.next()) {
-                System.out.println("ID: " + rs.getString("id") + ", Nama: " + rs.getString("name") + ", Spesialis: " + rs.getString("spesialis"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        List<Dokter> dokters = DokterDAO.getAllDokters();
+        System.out.println("Daftar Dokter:");
+        for (Dokter dokter : dokters) {
+            System.out.println("ID: " + dokter.getId() + ", Nama: " + dokter.getName() + ", Spesialis: " + dokter.getSpesialis());
         }
     }
 
@@ -51,7 +50,7 @@ class Admin extends Role {
         Scanner scanner = new Scanner(System.in);
         boolean adminMenu = true;
         while (adminMenu) {
-            System.out.println("1. Tambah Dokter\n2. Edit Dokter\n3. Lihat Daftar Dokter\n4. Logout");
+            System.out.println("1. Tambah Dokter\n2. Edit Dokter\n3. Lihat Daftar Dokter\n4. Edit Jadwal Dokter\n5. Lihat Jadwal Dokter\n6. Logout");
             int adminChoice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
 
@@ -78,6 +77,16 @@ class Admin extends Role {
                     listDokters();
                     break;
                 case 4:
+                    System.out.print("ID Dokter yang ingin diedit jadwalnya: ");
+                    String dokterId = scanner.nextLine();
+                    System.out.print("Jadwal Baru: ");
+                    String newJadwal = scanner.nextLine();
+                    JadwalDokterDAO.updateJadwal(dokterId, newJadwal);
+                    break;
+                case 5:
+                    JadwalDokterDAO.viewAllJadwal();
+                    break;
+                case 6:
                     adminMenu = false;
                     break;
                 default:

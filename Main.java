@@ -1,110 +1,62 @@
-class User extends Role {
-    public User(String id, String name, String email, String password) {
-        super(id, name, email, password, "User");
-    }
-
-    public void viewDokters() {
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT * FROM dokters")) {
-            System.out.println("Daftar Dokter:");
-            while (rs.next()) {
-                System.out.println("ID: " + rs.getString("id") + ", Nama: " + rs.getString("name") + ", Spesialis: " + rs.getString("spesialis"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void showMenu() {
-        System.out.println("Hanya dapat melihat daftar dokter.");
-    }
-}
-
-// File: Main.java
+import java.sql.*;
+import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            System.out.println("Login sebagai (1) Admin atau (2) User: ");
+            System.out.println("1. Login\n2. Sign Up \n3. Keluar");
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-
-            System.out.print("Email: ");
-            String email = scanner.nextLine();
-            System.out.print("Password: ");
-            String password = scanner.nextLine();
-
-            Role role = null;
+            scanner.nextLine(); 
 
             if (choice == 1) {
-                role = new Admin("", "", email, password);
+                System.out.print("Email: ");
+                String email = scanner.nextLine();
+                System.out.print("Password: ");
+                String password = scanner.nextLine();
+
+                Role role = null;
+                try (Connection conn = DatabaseConnection.getConnection();
+                     PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE email = ?")) {
+                    stmt.setString(1, email);
+                    ResultSet rs = stmt.executeQuery();
+                    if (rs.next()) {
+                        String id = rs.getString("id");
+                        String name = rs.getString("name");
+                        String roleName = rs.getString("role");
+                        if (roleName.equals("Admin")) {
+                            role = new Admin(id, name, email, password);
+                        } else if (roleName.equals("User")) {
+                            role = new User(id, name, email, password);
+                        }
+
+                        if (role != null && role.login(email, password)) {
+                            System.out.println("Selamat datang, " + role.getName() + "!");
+                            role.showMenu();
+                        } else {
+                            System.out.println("Email atau password salah.");
+                        }
+                    } else {
+                        System.out.println("Akun tidak ditemukan.");
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             } else if (choice == 2) {
-                role = new User("", "", email, password);
-            }
+                System.out.print("Nama: ");
+                String name = scanner.nextLine();
+                System.out.print("Email: ");
+                String email = scanner.nextLine();
+                System.out.print("Password: ");
+                String password = scanner.nextLine();
 
-            if (role != null && role.login(email, password)) {
-                System.out.println("Selamat datang, " + role.getName() + "!");
-                role.showMenu();
+                User newUser = new User("", name, email, password);
+                newUser.signUp(name, email, password);
+            } else if (choice == 3) {
+                System.out.println("Terima kasih!");
+                break;
             } else {
-                System.out.println("Email atau password salah.");
-            }
-        }
-    }
-}class User extends Role {
-    public User(String id, String name, String email, String password) {
-        super(id, name, email, password, "User");
-    }
-
-    public void viewDokters() {
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT * FROM dokters")) {
-            System.out.println("Daftar Dokter:");
-            while (rs.next()) {
-                System.out.println("ID: " + rs.getString("id") + ", Nama: " + rs.getString("name") + ", Spesialis: " + rs.getString("spesialis"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void showMenu() {
-        System.out.println("Hanya dapat melihat daftar dokter.");
-    }
-}
-
-// File: Main.java
-public class Main {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        while (true) {
-            System.out.println("Login sebagai (1) Admin atau (2) User: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-
-            System.out.print("Email: ");
-            String email = scanner.nextLine();
-            System.out.print("Password: ");
-            String password = scanner.nextLine();
-
-            Role role = null;
-
-            if (choice == 1) {
-                role = new Admin("", "", email, password);
-            } else if (choice == 2) {
-                role = new User("", "", email, password);
-            }
-
-            if (role != null && role.login(email, password)) {
-                System.out.println("Selamat datang, " + role.getName() + "!");
-                role.showMenu();
-            } else {
-                System.out.println("Email atau password salah.");
+                System.out.println("Pilihan tidak valid.");
             }
         }
     }
