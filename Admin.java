@@ -45,12 +45,25 @@ class Admin extends Role {
         }
     }
 
+    public void addJadwalDokter(String dokterId, String jadwal) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement("INSERT INTO jadwal_dokter (dokter_id, jadwal) VALUES (?, ?)")) {
+            stmt.setString(1, dokterId);
+            stmt.setString(2, jadwal);
+            stmt.executeUpdate();
+            System.out.println("Jadwal dokter berhasil ditambahkan.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+
     @Override
     public void showMenu() {
         Scanner scanner = new Scanner(System.in);
         boolean adminMenu = true;
         while (adminMenu) {
-            System.out.println("1. Tambah Dokter\n2. Edit Dokter\n3. Lihat Daftar Dokter\n4. Edit Jadwal Dokter\n5. Lihat Jadwal Dokter\n6. Logout");
+            System.out.println("1. Tambah Dokter\n2. Edit Dokter\n3. Lihat Daftar Dokter\n4. Tambah Jadwal Dokter\n5. Lihat Jadwal Dokter\n6. Logout");
             int adminChoice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
 
@@ -77,11 +90,11 @@ class Admin extends Role {
                     listDokters();
                     break;
                 case 4:
-                    System.out.print("ID Dokter yang ingin diedit jadwalnya: ");
+                    System.out.print("ID Dokter yang ingin ditambahkan jadwalnya: ");
                     String dokterId = scanner.nextLine();
                     System.out.print("Jadwal Baru: ");
                     String newJadwal = scanner.nextLine();
-                    JadwalDokterDAO.updateJadwal(dokterId, newJadwal);
+                    addJadwalDokter(dokterId, newJadwal);
                     break;
                 case 5:
                     JadwalDokterDAO.viewAllJadwal();

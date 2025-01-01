@@ -17,32 +17,34 @@ public class JadwalDokterDAO {
         return jadwalList;
     }
 
-    public static void updateJadwal(String dokterId, String newJadwal) {
+    public void addJadwalDokter(String dokterId, String jadwal) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement("UPDATE jadwal_dokter SET jadwal = ? WHERE dokter_id = ?")) {
-            stmt.setString(1, newJadwal);
-            stmt.setString(2, dokterId);
-            int rowsUpdated = stmt.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("Jadwal dokter berhasil diperbarui.");
-            } else {
-                System.out.println("Dokter dengan ID " + dokterId + " tidak ditemukan.");
-            }
+             PreparedStatement stmt = conn.prepareStatement("INSERT INTO jadwal_dokter (dokter_id, jadwal) VALUES (?, ?)")) {
+            stmt.setString(1, dokterId);
+            stmt.setString(2, jadwal);
+            stmt.executeUpdate();
+            System.out.println("Jadwal dokter berhasil ditambahkan.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
+    
     public static void viewAllJadwal() {
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT * FROM jadwal_dokter")) {
             System.out.println("Jadwal Dokter:");
+            boolean hasJadwal = false;  // Flag untuk mengecek jika ada jadwal
             while (rs.next()) {
+                hasJadwal = true;
                 System.out.println("Dokter ID: " + rs.getString("dokter_id") + ", Jadwal: " + rs.getString("jadwal"));
+            }
+            if (!hasJadwal) {
+                System.out.println("Tidak ada jadwal dokter yang tersedia.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+    
 }
