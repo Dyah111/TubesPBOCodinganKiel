@@ -65,8 +65,7 @@ class Admin extends Role {
         while (adminMenu) {
             System.out.println("1. Tambah Dokter\n2. Edit Dokter\n3. Lihat Daftar Dokter\n4. Tambah Jadwal Dokter\n5. Lihat Jadwal Dokter\n6. Logout");
             int adminChoice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
-
+            scanner.nextLine(); 
             switch (adminChoice) {
                 case 1:
                     System.out.print("ID Dokter: ");

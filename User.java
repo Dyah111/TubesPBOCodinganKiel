@@ -14,7 +14,7 @@ private boolean isEmailExists(String email) {
          PreparedStatement stmt = conn.prepareStatement("SELECT email FROM users WHERE email = ?")) {
         stmt.setString(1, email);
         ResultSet rs = stmt.executeQuery();
-        return rs.next(); // Jika ada hasil, email sudah digunakan
+        return rs.next(); 
     } catch (SQLException e) {
         e.printStackTrace();
     }
@@ -31,7 +31,7 @@ public void signUp(String name, String email, String password) {
         stmt.setString(1, name);
         stmt.setString(2, email);
         stmt.setString(3, password);
-        stmt.setString(4, "User"); // Role default adalah "User"
+        stmt.setString(4, "User"); 
         int rowsInserted = stmt.executeUpdate();
         if (rowsInserted > 0) {
             System.out.println("Akun berhasil dibuat. Silakan login.");
@@ -74,7 +74,7 @@ public void signUp(String name, String email, String password) {
         while (userMenu) {
             System.out.println("1. Pilih Dokter\n2. Logout");
             int userChoice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            scanner.nextLine();
 
             switch (userChoice) {
                 case 1:

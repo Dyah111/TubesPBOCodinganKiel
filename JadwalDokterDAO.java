@@ -34,7 +34,7 @@ public class JadwalDokterDAO {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT * FROM jadwal_dokter")) {
             System.out.println("Jadwal Dokter:");
-            boolean hasJadwal = false;  // Flag untuk mengecek jika ada jadwal
+            boolean hasJadwal = false;  
             while (rs.next()) {
                 hasJadwal = true;
                 System.out.println("Dokter ID: " + rs.getString("dokter_id") + ", Jadwal: " + rs.getString("jadwal"));
