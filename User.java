@@ -174,8 +174,8 @@ class User extends Role {
     
         // Jika pasien belum terdaftar, lanjutkan dengan reservasi
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmtInsert = conn.prepareStatement(
-                     "INSERT INTO reservations (dokter_id, pasien_id, nomor_antrian, status) VALUES (?, ?, ?, ?)")) {
+            PreparedStatement stmtInsert = conn.prepareStatement(
+                    "INSERT INTO reservations (dokter_id, pasien_id, nomor_antrian, status) VALUES (?, ?, ?, ?)")) {
     
             // Ambil nomor antrian terakhir untuk dokter yang dipilih
             int nomorAntrian = getNomorAntrianTerakhir(selectedDokter.getId()) + 1;
@@ -200,8 +200,8 @@ class User extends Role {
     private int getJumlahAntrianDokter(String dokterId) {
         int jumlahAntrian = 0;
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT COUNT(*) AS jumlah_antrian FROM reservations WHERE dokter_id = ? AND status = 'menunggu'")) {
+            PreparedStatement stmt = conn.prepareStatement(
+                "SELECT COUNT(*) AS jumlah_antrian FROM reservations WHERE dokter_id = ? AND status = 'menunggu'")) {
             stmt.setString(1, dokterId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -217,8 +217,8 @@ class User extends Role {
     private int getNomorAntrianTerakhir(String dokterId) {
         int nomorAntrianTerakhir = 0;
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT MAX(nomor_antrian) AS nomor_antrian FROM reservations WHERE dokter_id = ? AND status = 'menunggu'")) {
+            PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT MAX(nomor_antrian) AS nomor_antrian FROM reservations WHERE dokter_id = ? AND status = 'menunggu'")) {
             stmt.setString(1, dokterId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -233,8 +233,8 @@ class User extends Role {
     // Cek apakah pasien sudah terdaftar dengan status 'menunggu' untuk dokter yang dipilih
     private boolean isPasienAlreadyReservedForDokter(String pasienId, String dokterId) {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT COUNT(*) FROM reservations WHERE pasien_id = ? AND dokter_id = ? AND status = 'menunggu'")) {
+            PreparedStatement stmt = conn.prepareStatement(
+                    "SELECT COUNT(*) FROM reservations WHERE pasien_id = ? AND dokter_id = ? AND status = 'menunggu'")) {
             stmt.setString(1, pasienId);
             stmt.setString(2, dokterId);
     
@@ -326,7 +326,7 @@ class User extends Role {
                     break;
                 case 2:
                     reservasiDokter();
-                    // addReservation(id, id);
+                    // addReservation(id, id);3
                     break;
                 case 3:
                     userMenu = false;

@@ -44,10 +44,10 @@ class Admin extends Role {
         }
     }
 
-    public void addJadwalDokter(String dokterId, String jadwal) {
+    public void addJadwalDokter(String dokter_id, String jadwal) {
         try (Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO jadwal_dokter (dokterId, jadwal) VALUES (?, ?)")) {
-            stmt.setString(1, dokterId);
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO jadwal_dokter (dokter_id, jadwal) VALUES (?, ?)")) {
+            stmt.setString(1, dokter_id);
             stmt.setString(2, jadwal);
             stmt.executeUpdate();
             System.out.println("Jadwal dokter berhasil ditambahkan.");
