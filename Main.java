@@ -1,13 +1,19 @@
 import java.sql.*;
 import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         while (true) {
             System.out.println("1. Login\n2. Sign Up \n3. Keluar");
             int choice = scanner.nextInt();
-            scanner.nextLine(); 
+            scanner.nextLine();
 
             if (choice == 1) {
                 System.out.print("Email: ");
@@ -17,7 +23,7 @@ public class Main {
 
                 Role role = null;
                 try (Connection conn = DatabaseConnection.getConnection();
-                     PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE email = ?")) {
+                        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE email = ?")) {
                     stmt.setString(1, email);
                     ResultSet rs = stmt.executeQuery();
                     if (rs.next()) {
@@ -59,5 +65,10 @@ public class Main {
                 System.out.println("Pilihan tidak valid.");
             }
         }
+    }
+
+    private static Connection getConnection() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getConnection'");
     }
 }
